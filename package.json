@@ -1,0 +1,78 @@
+{
+  "name": "vite-reactts-electron-starter",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "main/index.js",
+  "author": {
+    "name": "Eric Roupe"
+  },
+  "description": "A Calendar for DAO's",
+  "keywords": [],
+  "scripts": {
+    "dev": "vite",
+    "emulators": "firebase emulators:start",
+    "kill": "npx kill-port 8080",
+    "dev:both": "concurrently \"yarn dev:vite\" \" yarn dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "npm run build:electron && electron .",
+    "build": "vite build",
+    "build:both": "npm run build:vite && npm run build:electron",
+    "build:vite": "vite build",
+    "build:electron": "tsc -p electron",
+    "dist": "npm run build && electron-builder",
+    "pack": "npm run build && electron-builder --dir",
+    "clean": "rimraf dist main src/build",
+    "type-check": "tsc",
+    "lint": "eslint . --ext js,jsx,ts,tsx",
+    "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix",
+    "deploy": "firebase deploy"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^1.1.3",
+    "ethers": "^5.5.4",
+    "firebase": "^9.6.6",
+    "react": "^17.0.2",
+    "react-blockies": "^1.4.1",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
+    "siwe": "^1.1.0",
+    "vite": "^2.8.2",
+    "wagmi": "^0.2.12"
+  },
+  "devDependencies": {
+    "@headlessui/react": "^1.4.3",
+    "@heroicons/react": "^1.0.5",
+    "@rollup/plugin-alias": "^3.1.9",
+    "@types/node": "^16.11.13",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "5.7.0",
+    "@typescript-eslint/parser": "5.7.0",
+    "autoprefixer": "^10.4.0",
+    "concurrently": "^6.4.0",
+    "electron": "^16.0.4",
+    "electron-builder": "^22.14.5",
+    "electron-is-dev": "^2.0.0",
+    "eslint": "8.4.1",
+    "eslint-config-airbnb": "19.0.2",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "postcss": "^8.4.5",
+    "prettier": "2.5.1",
+    "tailwindcss": "^3.0.22",
+    "typescript": "^4.5.4"
+  },
+  "build": {
+    "asar": true,
+    "files": [
+      "main",
+      "src/build"
+    ],
+    "directories": {
+      "buildResources": "resources"
+    }
+  }
+}
