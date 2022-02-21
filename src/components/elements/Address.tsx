@@ -1,31 +1,25 @@
-import React from "react";
+import React from 'react';
 
 export type AddressProps = {
   address: string;
-  shortened?: boolean;
+  shortend?: boolean;
 };
 
-const Address = ({ address, shortened = false }: AddressProps) => {
-  let displayAddress = "";
-  if (shortened && address) {
-    if (
-      address.includes(".eth") ||
-      address === "" ||
-      address === "Not connected"
-    ) {
+const Address = ({ address, shortend = false }: AddressProps) => {
+  let displayAddress = '';
+  if (shortend && address) {
+    if (address.includes('.eth') || address === '' || address === 'Not connected') {
       displayAddress = address;
     } else {
-      displayAddress = `${address.substring(0, 4)}...${address.substring(
-        address.length - 4
-      )}`.toLowerCase();
+      displayAddress = `${address.substring(0, 4)}...${address.substring(address.length - 4)}`.toLowerCase();
     }
-  } else if (!shortened && address) {
+  } else if (!shortend && address) {
     displayAddress = address;
   }
 
   return (
     <div>
-      <div className={"text-neutral-400"}>{displayAddress}</div>
+      <div className={''}>{displayAddress}</div>
     </div>
   );
 };

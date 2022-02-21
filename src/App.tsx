@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Route, Routes, Outlet, Navigate } from "react-router-dom";
-import firebaseApp from "./service/firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { LandingPage, DirectoryPage, CalendarPage, ProfilePage } from "./pages";
-import { Header } from "./components/layout";
-import AppBar from "./AppBar";
-
+import React, { useEffect, useState, useContext } from 'react';
+import { Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import firebaseApp from './service/firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { LandingPage, DirectoryPage, CalendarPage, ProfilePage, PageNotFound } from './pages';
+import { Header } from './components/layout';
+import AppBar from './AppBar';
 
 const auth = getAuth(firebaseApp);
 
@@ -26,7 +25,7 @@ function App() {
             }
           />
           <Route
-            path="/calendar"
+            path="/calendar/:id"
             element={
               <RequireAuth>
                 <CalendarPage />
@@ -34,13 +33,14 @@ function App() {
             }
           />
           <Route
-            path="/profile"
+            path="/profile/:id"
             element={
               <RequireAuth>
                 <ProfilePage />
               </RequireAuth>
             }
           />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>
     </AuthProvider>
@@ -53,19 +53,16 @@ const AppLayout = () => {
   let auth = useAuth();
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-stone-700">
       {window.Main && (
         <div className="flex-none">
           <AppBar />
         </div>
       )}
-      <header className="mb-2 md:mb-4">
-        <Header
-          currentUser={auth.firebaseUser}
-          firebaseLoading={auth.firebaseLoading}
-        />
+      <header className="mb-2 md:mb-4 z-50 sticky top-0">
+        <Header currentUser={auth.firebaseUser} firebaseLoading={auth.firebaseLoading} />
       </header>
-      <main className="h-screen bg-stone-900 text-stone-100">
+      <main className="h-screen text-stone-100">
         <Outlet />
       </main>
     </div>
@@ -102,7 +99,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-const useAuth = () => {
+export const useAuth = () => {
   return useContext(AuthContext);
 };
 
