@@ -13,12 +13,13 @@ import App from './App';
 
 const chains = defaultChains;
 const defaultChain = chain.mainnet;
-const infuraId: string = import.meta.env.VITE_PROD_INFURA_ID;
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID as string;
+const infuraId = import.meta.env.VITE_PROD_INFURA_ID as string;
 
 // Set up connectors
 type ConnectorsConfig = { chainId?: number };
 const connectors = ({ chainId }: ConnectorsConfig) => {
-  const rpcUrl = chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ?? defaultChain.rpcUrls[0];
+  // const rpcUrl = chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ?? defaultChain.rpcUrls[0];
   return [
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
     new WalletConnectConnector({
@@ -45,21 +46,16 @@ const isChainSupported = (chainId?: number) => chains.some((x) => x.id === chain
 // Set up providers
 const provider = ({ chainId }: ProviderConfig) =>
   providers.getDefaultProvider(isChainSupported(chainId) ? chainId : defaultChain.id, {
+    alchemy: alchemyId,
     infura: infuraId
   });
-// const webSocketProvider = ({ chainId }: ConnectorsConfig) =>
-//   isChainSupported(chainId)
-//     ? new providers.InfuraWebSocketProvider(chainId, infuraId)
-//     : undefined;
+const webSocketProvider = ({ chainId }: ConnectorsConfig) =>
+  isChainSupported(chainId) ? new providers.InfuraWebSocketProvider(chainId, infuraId) : undefined;
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider
-      autoConnect
-      connectors={connectors}
-      provider={provider}
-      // webSocketProvider={webSocketProvider}
-    >
+    <Provider autoConnect connectors={connectors} provider={provider} webSocketProvider={webSocketProvider}>
+      {/* <Provider autoConnect connectors={connectors}> */}
       <BrowserRouter>
         <App />
       </BrowserRouter>

@@ -1,29 +1,25 @@
-import clsx from "clsx";
-import React, { ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes } from 'react';
 
 export type ButtonProps = {
-  variant?: "default" | "primary" | "secondary";
+  className?: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button: React.FC<ButtonProps> = ({
-  variant = "default",
-  type,
-  onClick,
-  children,
-}) => {
-  const btnCls = clsx(
-    "text-sm font-medium px-6 py-4 rounded-lg border border-stone-600 transition-colors",
-    {
-      "bg-stone-600 text-utility-light hover:bg-stone-700":
-        variant === "primary",
-      "text-primary": variant === "secondary",
-      "bg-white text-stone-600 hover:bg-stone-100": variant === "default",
-    }
-  );
+const Button: React.FC<ButtonProps> = ({ className = '', type, disabled, onClick, children }) => {
+  const btnBase =
+    'rounded-xl bg-gradient-to-r from-fuchsia-700 hover:from-fuchsia-600 to-sky-600 hover:to-sky-400 shadow-md hover:shadow-md shadow-sky-600/20  border-fuchsia-700/20';
+
+  if (disabled)
+    return (
+      <div className={`${btnBase} ${className} p-[1px]`}>
+        <div className="flex px-4 py-2 font-medium bg-stone-700  text-stone-100  m-[2px] rounded-xl">{children}</div>
+      </div>
+    );
 
   return (
-    <button className={btnCls} type={type} onClick={onClick}>
-      {children}
+    <button className={`${btnBase} ${className}`} type={type} onClick={onClick}>
+      <div className="flex px-4 py-2 font-medium bg-stone-700 hover:bg-zinc-700 text-stone-100 hover:text-white m-[3px] rounded-lg">
+        {children}
+      </div>
     </button>
   );
 };
