@@ -1,78 +1,114 @@
-import React from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
+import React, { useMemo, useState, useEffect } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import classNames from '../../lib/classNames';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
+import { timeZone } from '../../lib/clock';
 
-const days = [
-  { date: "2021-12-27" },
-  { date: "2021-12-28" },
-  { date: "2021-12-29" },
-  { date: "2021-12-30" },
-  { date: "2021-12-31" },
-  { date: "2022-01-01", isCurrentMonth: true },
-  { date: "2022-01-02", isCurrentMonth: true },
-  { date: "2022-01-03", isCurrentMonth: true },
-  { date: "2022-01-04", isCurrentMonth: true },
-  { date: "2022-01-05", isCurrentMonth: true },
-  { date: "2022-01-06", isCurrentMonth: true },
-  { date: "2022-01-07", isCurrentMonth: true },
-  { date: "2022-01-08", isCurrentMonth: true },
-  { date: "2022-01-09", isCurrentMonth: true },
-  { date: "2022-01-10", isCurrentMonth: true },
-  { date: "2022-01-11", isCurrentMonth: true },
-  { date: "2022-01-12", isCurrentMonth: true, isToday: true },
-  { date: "2022-01-13", isCurrentMonth: true },
-  { date: "2022-01-14", isCurrentMonth: true },
-  { date: "2022-01-15", isCurrentMonth: true },
-  { date: "2022-01-16", isCurrentMonth: true },
-  { date: "2022-01-17", isCurrentMonth: true },
-  { date: "2022-01-18", isCurrentMonth: true },
-  { date: "2022-01-19", isCurrentMonth: true },
-  { date: "2022-01-20", isCurrentMonth: true },
-  { date: "2022-01-21", isCurrentMonth: true },
-  { date: "2022-01-22", isCurrentMonth: true, isSelected: true },
-  { date: "2022-01-23", isCurrentMonth: true },
-  { date: "2022-01-24", isCurrentMonth: true },
-  { date: "2022-01-25", isCurrentMonth: true },
-  { date: "2022-01-26", isCurrentMonth: true },
-  { date: "2022-01-27", isCurrentMonth: true },
-  { date: "2022-01-28", isCurrentMonth: true },
-  { date: "2022-01-29", isCurrentMonth: true },
-  { date: "2022-01-30", isCurrentMonth: true },
-  { date: "2022-01-31", isCurrentMonth: true },
-  { date: "2022-02-01" },
-  { date: "2022-02-02" },
-  { date: "2022-02-03" },
-  { date: "2022-02-04" },
-  { date: "2022-02-05" },
-  { date: "2022-02-06" },
-];
+dayjs.extend(timezone);
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
+export type MonthSmallProps = {
+  weekStart: string;
+  onDatePicked: (pickedDate: Dayjs) => void;
+  date: Dayjs | null;
+};
 
-export type MonthSmallProps = {};
+const MonthSmall = ({ weekStart, onDatePicked, date }: MonthSmallProps) => {
+  const currentDate = dayjs();
+  const [browsingDate, setBrowsingDate] = useState<Dayjs | null>(date);
+  const [datePicked, setDatePicked] = useState<Dayjs | null>(null);
 
-const MonthSmall = ({}: MonthSmallProps) => {
+  useEffect(() => {
+    // console.log(date);
+    if (!browsingDate || (date && browsingDate.utcOffset() !== date?.utcOffset())) {
+      setBrowsingDate(date || dayjs().tz(timeZone()));
+    }
+  }, [date, browsingDate]);
+
+  const days = useMemo(() => {
+    // console.log(browsingDate);
+    // console.log(currentDate);
+    if (!browsingDate) {
+      return [];
+    }
+    // Create placeholder elements for empty days in first week
+    let weekdayOfFirst = browsingDate.date(1).day();
+    if (weekStart === 'Monday') {
+      weekdayOfFirst -= 1;
+      if (weekdayOfFirst < 0) weekdayOfFirst = 6;
+    }
+
+    const days = Array(weekdayOfFirst).fill(null);
+
+    const isDisabled = (day: number) => {
+      const date = browsingDate.startOf('day').date(day);
+      return date.isBefore(browsingDate.startOf('day'));
+    };
+
+    const isCurrentDate = (day: number) => {
+      const date = browsingDate.startOf('day').date(day);
+      return date.isSame(currentDate.startOf('day'));
+    };
+
+    const isDateSelected = (day: number) => {
+      const date = browsingDate.startOf('day').date(day);
+      return date.isSame(datePicked?.startOf('day'));
+    };
+
+    const daysInMonth = browsingDate.daysInMonth();
+
+    if (browsingDate.month() === currentDate.month() && browsingDate.year() === currentDate.year()) {
+      for (let i = 1; i <= daysInMonth; i++) {
+        days.push({ disabled: isDisabled(i), currentDate: isCurrentDate(i), dateSelected: isDateSelected(i), date: i });
+      }
+    } else if (
+      (browsingDate.month() < currentDate.month() &&
+        (browsingDate.year() === currentDate.year() || browsingDate.year() < currentDate.year())) ||
+      browsingDate.year() < currentDate.year()
+    ) {
+      for (let i = 1; i <= daysInMonth; i++) {
+        days.push({ disabled: true, dateSelected: isDateSelected(i), date: i });
+      }
+    } else {
+      for (let i = 1; i <= daysInMonth; i++) {
+        days.push({ dateSelected: isDateSelected(i), date: i });
+      }
+    }
+
+    // console.log('days', days);
+    return days;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [browsingDate, datePicked]);
+
+  // Handle month changes
+  const incrementMonth = () => {
+    setBrowsingDate(browsingDate?.add(1, 'month'));
+  };
+
+  const decrementMonth = () => {
+    setBrowsingDate(browsingDate?.subtract(1, 'month'));
+  };
+
   return (
-    <div className="mx-4">
-      <div className="sm:w-1/2 items-center mx-auto border p-2 rounded-lg">
-        <div className="flex items-center ">
+    <div className="">
+      <div className="items-center mx-auto p-2">
+        <div className="flex items-center">
           <h2 className="flex-auto font-semibold text-slate-200">
-            January 2022
+            {dayjs(browsingDate).format('MMMM')} {browsingDate?.year()}
           </h2>
           <button
             type="button"
-            className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-slate-400 hover:text-slate-500"
+            className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-slate-400 hover:text-slate-100"
           >
             <span className="sr-only">Previous month</span>
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+            <ChevronLeftIcon onClick={() => decrementMonth()} className="h-5 w-5" aria-hidden="true" />
           </button>
           <button
             type="button"
-            className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-slate-400 hover:text-slate-500"
+            className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-slate-400 hover:text-slate-100"
           >
             <span className="sr-only">Next month</span>
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+            <ChevronRightIcon onClick={() => incrementMonth()} className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
         <div className="mt-10 grid grid-cols-7 text-center text-xs leading-6 text-slate-200">
@@ -86,37 +122,32 @@ const MonthSmall = ({}: MonthSmallProps) => {
         </div>
         <div className="mt-2 grid grid-cols-7 text-sm">
           {days.map((day, dayIdx) => (
-            <div
-              key={day.date}
-              className={classNames(
-                dayIdx > 6 && "border-t border-slate-200",
-                "py-2"
+            <div key={day === null ? `e-${dayIdx}` : `day-${day.date}`} className="relative w-full pt-2">
+              {day === null ? (
+                <div key={`e-${dayIdx}`} />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDatePicked(browsingDate.date(day.date));
+                    onDatePicked(browsingDate.date(day.date));
+                  }}
+                  className={classNames(
+                    'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                    'hover:border-sky-700 hover:border hover:text-stone-100 dark:hover:border-white',
+                    day.disabled ? 'font-light text-gray-400 hover:border-sky-400' : 'font-medium',
+                    day.dateSelected ? 'bg-sky-500 text-stone-100 font-bold' : '',
+                    day.currentDate ? 'bg-fuchsia-600/40 text-stone-100' : '',
+                    date && date.isSame(browsingDate.date(day.date), 'day')
+                      ? ''
+                      : !day.disabled
+                      ? '  dark:bg-gray-600 dark:text-stone-100'
+                      : ''
+                  )}
+                >
+                  {day.date}
+                </button>
               )}
-            >
-              <button
-                type="button"
-                className={classNames(
-                  day.isSelected && "text-white",
-                  !day.isSelected && day.isToday && "text-indigo-600",
-                  !day.isSelected &&
-                    !day.isToday &&
-                    day.isCurrentMonth &&
-                    "text-slate-100",
-                  !day.isSelected &&
-                    !day.isToday &&
-                    !day.isCurrentMonth &&
-                    "text-slate-400",
-                  day.isSelected && day.isToday && "bg-indigo-600",
-                  day.isSelected && !day.isToday && "bg-slate-900",
-                  !day.isSelected && "hover:bg-slate-200",
-                  (day.isSelected || day.isToday) && "font-semibold",
-                  "mx-auto flex h-8 w-8 items-center justify-center rounded-full"
-                )}
-              >
-                <time dateTime={day.date}>
-                  {day.date.split("-").pop().replace(/^0/, "")}
-                </time>
-              </button>
             </div>
           ))}
         </div>

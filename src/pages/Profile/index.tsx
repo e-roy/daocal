@@ -3,6 +3,7 @@ import { Button } from '../../components/elements';
 import { NftCard } from '../../components/cards';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../App';
+import * as dayjs from 'dayjs';
 
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 const db = getFirestore();
@@ -22,6 +23,7 @@ export default function ProfilePage() {
   const contract = params.id;
   const [tokens, setTokens] = useState([]);
   const [daoInfo, setDaoInfo] = useState({});
+  const [date, setDate] = useState();
 
   const auth = useAuth();
 
@@ -29,9 +31,12 @@ export default function ProfilePage() {
     if (auth.firebaseUser) {
       const q = doc(db, 'users', auth.firebaseUser, 'daos', contract);
       const unsub = onSnapshot(q, (doc) => {
-        // console.log(doc.data());
+        console.log(doc.data());
         setDaoInfo(doc.data());
         setTokens(doc.data()?.tokens);
+        const time = doc.data().created;
+        const format = dayjs(time).format('MMM DD YYYY h mm a');
+        setDate(format);
       });
       return unsub;
     }
@@ -49,6 +54,7 @@ export default function ProfilePage() {
         <div className="flex">
           <h1 className="text-xl text-stone-100">{daoInfo.name}</h1>
           <span className=" text-stone-200 italic pt-1 pl-8">{daoInfo.symbol}</span>
+          {date && <span className=" text-stone-200 italic pt-1 pl-8">created: {date}</span>}
         </div>
         <div>
           {tokens.map((token, index) => (
