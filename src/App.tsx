@@ -4,6 +4,7 @@ import firebaseApp from './service/firebase';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { LandingPage, DirectoryPage, CalendarPage, ProfilePage, PageNotFound } from './pages';
 import { Header } from './components/layout';
+import { Loading } from './components/elements';
 import AppBar from './AppBar';
 
 const auth = getAuth(firebaseApp);
@@ -107,12 +108,7 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
   let auth = useAuth();
   // console.log(auth);
   if (auth.firebaseLoading) {
-    return (
-      <div className="">
-        loading...
-        {/* <img src={Loader} alt=""></img> */}
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!auth.firebaseUser && !auth.firebaseLoading) {

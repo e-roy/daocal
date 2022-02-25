@@ -13,11 +13,11 @@ export interface CalendarListProps {
 }
 
 const CalendarList = ({ events, loading, onSelect }: CalendarListProps) => {
-  const convertDate = (date: {}) => {
+  const convertDate = (date: any) => {
     return dayjs(date.toDate()).format('MMM DD YYYY');
   };
 
-  const convertHour = (date: {}) => {
+  const convertHour = (date: any) => {
     return dayjs(date.toDate()).format('h:mm a');
   };
 

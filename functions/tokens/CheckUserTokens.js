@@ -4,18 +4,13 @@ const { ethers } = require('ethers');
 
 // alchemy-nft-api/alchemy-web3-script.js
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3');
-
-// Replace with your Alchemy api key:
-// const alchemyKey = process.env.ALCHEMY_ID;
-const alchemyKey = 'TEsgi1FSvh_z3JMb4fjYCKTyriEy89RU';
+const alchemyKey = process.env.ALCHEMY_ID;
 // Initialize an alchemy-web3 instance:
 const alchemyETH = createAlchemyWeb3(`https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`);
-
 const alchemyPoly = createAlchemyWeb3(`https://polygon-mainnet.g.alchemy.com/v2/${alchemyKey}`);
 
-const testContract = '0x25ed58c027921e14d86380ea2646e3a1b5c55a8b';
-
-const testAddress = '0x4738c97a2752b2fc171659e46103c36110466673';
+// const testContract = '0x25ed58c027921e14d86380ea2646e3a1b5c55a8b';
+// const testAddress = '0x4738c97a2752b2fc171659e46103c36110466673';
 
 const getAllDaoContracts = async () => {
   let contractAddresses = [];
@@ -67,18 +62,20 @@ const updateUserDaoTokens = async (address, daoAddress, confirmedDaoTokens) => {
 
 const checkContract = async (address) => {
   const allDaoContracts = await getAllDaoContracts();
+  let allNfts = [];
 
-  const nfts = await alchemyETH.alchemy.getNfts({
+  const ethNfts = await alchemyETH.alchemy.getNfts({
     owner: address
   });
+  allNfts = [...ethNfts.ownedNfts];
 
-  //   const polyNfts = await alchemyPoly.alchemy.getNfts({
-  //     owner: address,
-  //   });
-  //   console.log(polyNfts);
+  const polyNfts = await alchemyPoly.alchemy.getNfts({
+    owner: address
+  });
+  allNfts = [...allNfts, ...polyNfts.ownedNfts];
 
   for (const daoAddress of allDaoContracts) {
-    const confirmedDaoTokens = nfts.ownedNfts.filter((nft) => {
+    const confirmedDaoTokens = allNfts.filter((nft) => {
       return nft.contract.address.toLowerCase() === daoAddress.toLowerCase();
     });
 

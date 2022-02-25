@@ -4,11 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MonthSmall, CalendarList, CreateEvent, EventDisplay } from '../../components/calendar';
 import { useAuth } from '../../App';
 import dayjs, { Dayjs } from 'dayjs';
-// import { timeZone } from '../../lib/clock';
-import { DateObject } from 'react-multi-date-picker';
-import { EventDisplayProps } from '../../components/calendar/EventDisplay';
+import { IEventItem } from '../../components/calendar/EventDisplay';
+import classNames from '../../lib/classNames';
 
-import { getFirestore, doc, onSnapshot, collection, query, where, orderBy } from 'firebase/firestore';
+import { getFirestore, onSnapshot, collection, query, where, DocumentData } from 'firebase/firestore';
 const db = getFirestore();
 
 export default function CalendarPage() {
@@ -17,13 +16,12 @@ export default function CalendarPage() {
   const contract = params.id;
   const auth = useAuth();
 
-  // const [daySelected, setDaySelected] = useState<Dayjs | null>(null);
   const [daySelectedDisplay, setDaySelectedDisplay] = useState<string>(dayjs().format('MMM DD YYYY'));
 
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedEvent, setSelectedEvent] = useState<EventDisplayProps>({
+  const [selectedEvent, setSelectedEvent] = useState<IEventItem>({
     title: '',
     description: '',
     date: new Date(),
@@ -32,9 +30,14 @@ export default function CalendarPage() {
     endTime: new Date()
   });
 
+  const tabs = [
+    { name: daySelectedDisplay, value: 'day' },
+    { name: 'Create Event', value: 'create' }
+  ];
+
+  const [currentTab, setCurrentTab] = useState(tabs[0]);
+
   const changeDate = (date: Dayjs) => {
-    // console.log(date.format('YYYY-MM-DDZZ'));
-    // setDaySelected(date.format('YYYY-MM-DDZZ'));
     setDaySelectedDisplay(date.format('MMM DD YYYY'));
   };
 
@@ -59,10 +62,11 @@ export default function CalendarPage() {
         where('date', '<=', endDay)
       );
       const unsub = onSnapshot(q, (querySnapshot) => {
-        const events = [];
+        const events: [] = [];
         querySnapshot.forEach((doc) => {
-          // console.log(doc.data().date.toDate());
-          events.push(doc.data());
+          // console.log(doc.data());
+          const data = doc.data() as IEventItem;
+          if (data) events.push(data);
         });
         // console.log(events);
         setEvents(events);
@@ -72,7 +76,7 @@ export default function CalendarPage() {
       return unsub;
     }
   }, [daySelectedDisplay]);
-  const handleSected = (val: any) => {
+  const handleSelected = (val: any) => {
     console.log('selected');
     console.log(val);
     setSelectedEvent(val);
@@ -87,27 +91,35 @@ export default function CalendarPage() {
           <Button onClick={() => navigate(`/profile/${contract}`)}>Profile</Button>
         </div>
       </div>
-      <div>
-        {/* <Button>Create Event</Button> */}
-        <div className="sm:w-1/2 px-4 mr-2 rounded border border-stone-800/50 shadow-lg ">
-          <CreateEvent daoAddress={contract} />
-        </div>
-      </div>
-      <div className="sm:flex mt-8">
-        <div className="sm:w-1/2 px-4 mr-2 rounded border border-stone-800/50 shadow-lg ">
-          <div className="text-center font-semibold text-lg">{daySelectedDisplay}</div>
 
-          <CalendarList events={events} loading={loading} onSelect={handleSected} />
+      <div className="sm:flex mt-8 min-h-2/3">
+        <div className="sm:w-1/2 px-4 mr-2 rounded border border-stone-800/50 shadow-lg ">
+          {tabs.map((tab) => (
+            <button
+              key={tab.name}
+              onClick={() => setCurrentTab(tab)}
+              className={classNames(
+                currentTab.value === tab.value
+                  ? 'border-stone-100 text-stone-100'
+                  : 'border-transparent text-stone-500 hover:text-stone-300 hover:border-stone-300',
+                'whitespace-nowrap mx-4 pb-2 px-1 border-b-2 font-medium '
+              )}
+            >
+              {tab.name}
+            </button>
+          ))}
+          {currentTab.value === 'day' && <CalendarList events={events} loading={loading} onSelect={handleSelected} />}
+          {currentTab.value === 'create' && <CreateEvent daoAddress={contract} />}
         </div>
         <div className="sm:w-1/2 px-4 ml-2 rounded border border-stone-800/50 shadow-lg ">
           <MonthSmall onDatePicked={changeDate} weekStart={'Monday'} />
         </div>
       </div>
-      <div>
+      {currentTab.value === 'day' && (
         <div className="rounded-lg mt-4 border border-stone-800/50 shadow-lg h-64">
           <EventDisplay event={selectedEvent} loading={false} />
         </div>
-      </div>
+      )}
     </div>
   );
 }
