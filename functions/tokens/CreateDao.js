@@ -45,7 +45,7 @@ const CreateDao = functions.https.onCall(async ({ contractAddress }, context) =>
   const info = await getDaoInfo(contractAddress);
   // console.log("CREATE DAO INFO", info);
 
-  // await storeDaoInfo(info);
+  await storeDaoInfo(info);
 
   return 'success';
 });

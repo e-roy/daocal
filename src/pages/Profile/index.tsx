@@ -8,6 +8,8 @@ import * as dayjs from 'dayjs';
 import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 const db = getFirestore();
 
+const exContract = '0x916b13fca6192fe5e4e2cd58f712ba9ade43ced0';
+
 // export interface UsersDaoInfo {
 //   contract: string;
 //   created: number;

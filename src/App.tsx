@@ -53,7 +53,7 @@ const AppLayout = () => {
   let auth = useAuth();
 
   return (
-    <div className="flex flex-col h-screen bg-stone-700">
+    <div className="flex flex-col min-h-screen bg-stone-700">
       {window.Main && (
         <div className="flex-none">
           <AppBar />
@@ -62,7 +62,7 @@ const AppLayout = () => {
       <header className="mb-2 md:mb-4 z-50 sticky top-0">
         <Header currentUser={auth.firebaseUser} firebaseLoading={auth.firebaseLoading} />
       </header>
-      <main className="h-screen text-stone-100">
+      <main className="text-stone-100">
         <Outlet />
       </main>
     </div>

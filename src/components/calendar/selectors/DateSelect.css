@@ -1,0 +1,133 @@
+.custom-input {
+  border-radius: 10px;
+  padding: 4px 12px;
+}
+
+.custom-input:focus {
+  outline: none;
+}
+
+.custom-calendar.rmdp-wrapper,
+.rmdp-container .custom-calendar.ep-arrow::after {
+  background-color: #44403c;
+  box-shadow: 2px 2px 5px 1px #1c1917;
+}
+
+.rmdp-container .custom-calendar.ep-arrow[direction='bottom'] {
+  border-top: 1px solid #44403c;
+}
+
+.rmdp-container .custom-calendar.ep-arrow[direction='top'] {
+  border-bottom: 1px solid #44403c;
+}
+
+/* .custom-container {
+  width: 100%;
+} */
+
+.rmdp-time-picker div input {
+  background-color: #44403c;
+  color: #e7e5e4;
+}
+
+.custom-calendar .rmdp-time-picker div .rmdp-am {
+  background-color: #44403c;
+  color: #e7e5e4;
+}
+
+:root {
+  --rmdp-primary-purple: #a21caf;
+  --rmdp-secondary-purple: #701a75;
+  --rmdp-shadow-purple: #86198f;
+  --rmdp-today-purple: #e879f9;
+  --rmdp-hover-purple: #d946ef;
+  --rmdp-deselect-purple: #f0abfc;
+}
+
+.custom-calendar .rmdp-header-values {
+  color: #e7e5e4;
+  font-size: 1.5em;
+}
+
+.custom-calendar .rmdp-day {
+  color: #e7e5e4;
+}
+
+.custom-calendar .rmdp-month-picker {
+  background-color: #44403c;
+}
+.custom-calendar .rmdp-year-picker {
+  background-color: #44403c;
+}
+
+.custom-calendar .rmdp-wrapper {
+  border: 1px solid var(--rmdp-secondary-purple);
+  box-shadow: 0 0 5px var(--rmdp-secondary-purple);
+}
+
+.custom-calendar .rmdp-panel-body li {
+  background-color: var(--rmdp-primary-purple);
+  box-shadow: 0 0 2px var(--rmdp-secondary-purple);
+}
+
+.custom-calendar .rmdp-week-day {
+  color: var(--rmdp-primary-purple);
+}
+
+.custom-calendar .rmdp-day.rmdp-deactive {
+  color: var(--rmdp-secondary-purple);
+}
+
+.custom-calendar .rmdp-range {
+  background-color: var(--rmdp-primary-purple);
+  box-shadow: 0 0 3px var(--rmdp-shadow-purple);
+}
+
+.custom-calendar .rmdp-arrow {
+  border: solid var(--rmdp-primary-purple);
+  border-width: 0 2px 2px 0;
+}
+
+.custom-calendar .rmdp-arrow-container:hover {
+  background-color: var(--rmdp-primary-purple);
+  box-shadow: 0 0 3px var(--rmdp-secondary-purple);
+}
+
+.custom-calendar .rmdp-panel-body::-webkit-scrollbar-thumb {
+  background: var(--rmdp-primary-purple);
+}
+
+.custom-calendar .rmdp-day.rmdp-today span {
+  background-color: var(--rmdp-today-purple);
+}
+
+.custom-calendar .rmdp-rtl .rmdp-panel {
+  border-left: unset;
+  border-right: 1px solid var(--rmdp-secondary-purple);
+}
+
+.custom-calendar .rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: var(--rmdp-primary-purple);
+  box-shadow: 0 0 3px var(--rmdp-shadow-purple);
+}
+
+.custom-calendar .rmdp-day:not(.rmdp-day-hidden) span:hover {
+  background-color: var(--rmdp-hover-purple) !important;
+}
+
+.custom-calendar .b-deselect {
+  color: var(--rmdp-deselect-purple);
+  background-color: white;
+}
+
+.custom-calendar .rmdp-action-button {
+  color: var(--rmdp-primary-purple);
+}
+
+.custom-calendar .rmdp-button:not(.rmdp-action-button) {
+  background-color: var(--rmdp-primary-purple);
+}
+
+.custom-calendar .rmdp-button:not(.rmdp-action-button):hover {
+  background-color: var(--rmdp-deselect-purple);
+}
