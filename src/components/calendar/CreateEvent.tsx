@@ -98,7 +98,7 @@ const CreateEvent = ({ daoAddress }: CreateEventProps) => {
             <div>Date</div>
             <DateSelect
               value={eventData.date}
-              onChange={(val) => {
+              onChange={(val: any) => {
                 setDecoupledDate(new Date(val?.valueOf()));
               }}
             />
@@ -108,7 +108,7 @@ const CreateEvent = ({ daoAddress }: CreateEventProps) => {
             <div>Start Time</div>
             <TimeSelect
               value={eventData.startTime}
-              onChange={(val) => {
+              onChange={(val: any) => {
                 setDecoupledStartTime(new Date(val?.valueOf()));
               }}
             />
@@ -117,7 +117,7 @@ const CreateEvent = ({ daoAddress }: CreateEventProps) => {
             <div>End Time</div>
             <TimeSelect
               value={eventData.endTime}
-              onChange={(val) => {
+              onChange={(val: any) => {
                 setDecoupledEndTime(new Date(val?.valueOf()));
               }}
             />

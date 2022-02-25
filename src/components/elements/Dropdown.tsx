@@ -4,10 +4,16 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import classNames from '../../lib/classNames';
 
 export type DropdownProps = {
-  options: string[];
+  options: IOptionsItem[];
+  onSelect: (option: string) => void;
 };
 
-const Dropdown = ({ options }: DropdownProps) => {
+export interface IOptionsItem {
+  label: string;
+  value: string;
+}
+
+const Dropdown = ({ options, onSelect }: DropdownProps) => {
   const [selectOption, setSelectOption] = useState('select');
 
   return (
@@ -16,7 +22,7 @@ const Dropdown = ({ options }: DropdownProps) => {
         <>
           <Menu.Button
             className={
-              'inline-flex flex-end w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none'
+              'flex justify-end w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none'
             }
           >
             {selectOption}
@@ -38,8 +44,8 @@ const Dropdown = ({ options }: DropdownProps) => {
               }
             >
               <div className={'py-1'}>
-                {options.map((option, id) => (
-                  <Menu.Item key={id}>
+                {options.map((option: { label: string; value: string }, index: number) => (
+                  <Menu.Item key={index}>
                     {({ active }) => (
                       <div className={'py-1 pl-4'}>
                         <div
@@ -47,9 +53,12 @@ const Dropdown = ({ options }: DropdownProps) => {
                             active ? 'text-stone-100 font-semibold' : 'text-stone-300',
                             'flex my-1 items-center cursor-pointer border-r-4 border-transparent hover:border-stone-100'
                           )}
-                          onClick={() => setSelectOption(option)}
+                          onClick={() => {
+                            setSelectOption(option.label);
+                            onSelect(option.value);
+                          }}
                         >
-                          {option}
+                          {option.label}
                         </div>
                       </div>
                     )}

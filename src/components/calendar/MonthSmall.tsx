@@ -10,12 +10,12 @@ dayjs.extend(timezone);
 export type MonthSmallProps = {
   weekStart: string;
   onDatePicked: (pickedDate: Dayjs) => void;
-  date: Dayjs | null;
+  date?: Dayjs | undefined;
 };
 
 const MonthSmall = ({ weekStart, onDatePicked, date }: MonthSmallProps) => {
   const currentDate = dayjs();
-  const [browsingDate, setBrowsingDate] = useState<Dayjs | null>(date);
+  const [browsingDate, setBrowsingDate] = useState<Dayjs | undefined>(date);
   const [datePicked, setDatePicked] = useState<Dayjs | null>(null);
 
   useEffect(() => {
@@ -129,8 +129,10 @@ const MonthSmall = ({ weekStart, onDatePicked, date }: MonthSmallProps) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setDatePicked(browsingDate.date(day.date));
-                    onDatePicked(browsingDate.date(day.date));
+                    if (browsingDate) {
+                      setDatePicked(browsingDate.date(day.date));
+                      onDatePicked(browsingDate.date(day.date));
+                    }
                   }}
                   className={classNames(
                     'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
@@ -138,7 +140,7 @@ const MonthSmall = ({ weekStart, onDatePicked, date }: MonthSmallProps) => {
                     day.disabled ? 'font-light text-gray-400 hover:border-sky-400' : 'font-medium',
                     day.dateSelected ? 'bg-sky-500 text-stone-100 font-bold' : '',
                     day.currentDate ? 'bg-fuchsia-600/40 text-stone-100' : '',
-                    date && date.isSame(browsingDate.date(day.date), 'day')
+                    browsingDate && date && date.isSame(browsingDate.date(day.date), 'day')
                       ? ''
                       : !day.disabled
                       ? '  dark:bg-gray-600 dark:text-stone-100'
