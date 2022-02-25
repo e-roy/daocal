@@ -6,7 +6,8 @@ const { ethers } = require('ethers');
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3');
 
 // Replace with your Alchemy api key:
-const alchemyKey = process.env.ALCHEMY_ID;
+// const alchemyKey = process.env.ALCHEMY_ID;
+const alchemyKey = 'TEsgi1FSvh_z3JMb4fjYCKTyriEy89RU';
 // Initialize an alchemy-web3 instance:
 const alchemyETH = createAlchemyWeb3(`https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`);
 

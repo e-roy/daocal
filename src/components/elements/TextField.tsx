@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from 'react';
 
 export type TextFieldProps = {
   name?: string;
@@ -6,6 +6,8 @@ export type TextFieldProps = {
   value?: string;
   required?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   typeClass?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
@@ -13,22 +15,21 @@ const TextField: React.FC<TextFieldProps> = ({
   name,
   label,
   value,
-  type = "text",
+  type = 'text',
   required,
   autoComplete,
   placeholder,
   typeClass,
   onChange,
+  onFocus,
+  onBlur
 }) => {
   return (
     <div className={typeClass}>
-      <label
-        htmlFor={name}
-        className={"block text-sm font-medium text-stone-100"}
-      >
+      <label htmlFor={name} className={'block text-sm font-medium text-stone-100'}>
         {label}
       </label>
-      <div className={"mt-1"}>
+      <div className={'mt-1'}>
         <input
           id={name}
           name={name}
@@ -40,8 +41,14 @@ const TextField: React.FC<TextFieldProps> = ({
           onChange={(e) => {
             onChange(e);
           }}
+          onFocus={(e) => {
+            onFocus && onFocus(e);
+          }}
+          onBlur={(e) => {
+            onBlur && onBlur(e);
+          }}
           className={
-            "block w-full rounded-md border border-stone-200 shadow-sm text-base text-stone-700 py-2 px-3 focus:outline-transparent focus:border-stone-300 focus:ring focus:ring-stone-200 focus:ring-opacity-50"
+            'block w-full rounded-md border border-stone-200 shadow-sm text-base text-stone-700 py-2 px-3 focus:outline-transparent focus:border-stone-300 focus:ring focus:ring-stone-200 focus:ring-opacity-50'
           }
         />
       </div>

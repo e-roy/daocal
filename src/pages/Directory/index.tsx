@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button } from '../../components/elements';
 import { DaoCard } from '../../components/cards';
-import { checkUserTokens, createNewDao } from '../../utils/directory/index';
+import { CreateDao } from '../../components/directory';
+import { checkUserTokens } from '../../utils/directory/index';
 import { useAuth } from '../../App';
 
 import { getFirestore, collection, onSnapshot, query } from 'firebase/firestore';
@@ -12,7 +12,6 @@ export type DirectoryPageProps = {};
 export default function DirectoryPage({}: DirectoryPageProps) {
   const [loading, setLoading] = useState(true);
   const [gatedDaos, setGatedDaos] = useState([]);
-  const [daoAddress, setDaoAddress] = useState('');
   const auth = useAuth();
 
   useEffect(() => {
@@ -57,10 +56,7 @@ export default function DirectoryPage({}: DirectoryPageProps) {
           </div>
         ))}
       </div>
-
-      {daoAddress}
-      <TextField label="dao address" onChange={(e) => setDaoAddress(e.target.value)} />
-      <Button onClick={() => createNewDao(daoAddress)}>create dao</Button>
+      <CreateDao />
     </div>
   );
 }
